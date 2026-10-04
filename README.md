@@ -60,6 +60,12 @@ start — which is the one thing a mystery lab exists to withhold. So the page s
 nor the category: it just opens the lab. The topic is available behind a collapsed *Reveal the
 topic* toggle, for after you've solved it or given up.
 
+The launch opens in its own tab, and a waiting room tab takes focus in front of it. The waiting room
+switches to the lab on its button or after 10 seconds. This keeps your eyes off the lab tab while it
+is still on the launch URL, which is all it does: the address bar and the browser history still
+show `categoryId` while the lab is starting. Browsers block the second pop-up by default: allow
+pop-ups for the site and the waiting room appears; otherwise the lab opens alone, as before.
+
 The URL you actually end up on (after PortSwigger's redirect) cannot be displayed here either, and
 not by choice: the endpoint sends no `Access-Control-Allow-Origin` header, so a cross-origin
 `fetch` gets an opaque response with an empty `url` and an unreadable `Location`, and reading

@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Waiting room · Mystery Pool</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<main>
+  <section class="panel roll-panel">
+    <h2>Your lab is starting in another tab</h2>
+    <p class="result-cat">Stay here. This tab switches to the lab in <strong id="count">10</strong> seconds.</p>
+    <button type="button" id="go" class="btn-primary">Go to the lab now</button>
+    <p id="fallback" class="popup-note" hidden>
+      This tab lost its link to Mystery Pool. Switch to your lab tab yourself.
+    </p>
+  </section>
+</main>
+
+<script src="assets/wait.js"></script>
+</body>
+</html>

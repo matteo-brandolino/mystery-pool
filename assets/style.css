@@ -250,6 +250,23 @@ code {
 
 .popup-note { margin: 10px 0 0; font-size: 0.78rem; color: var(--text-dim); }
 
+.expect {
+  margin-top: 22px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+  text-align: left;
+  font-size: 0.84rem;
+  color: var(--text-dim);
+}
+
+.expect-title { margin: 0 0 8px; font-weight: 600; color: var(--text); }
+
+.expect ol { margin: 0 0 8px; padding-left: 20px; }
+
+.expect li { margin-bottom: 6px; }
+
+.expect p:last-child { margin: 0; }
+
 .site-foot {
   border-top: 1px solid var(--border);
   padding-top: 22px;
