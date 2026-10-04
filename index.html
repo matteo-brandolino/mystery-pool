@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mystery Pool</title>
+<meta name="description" content="Roll a random PortSwigger Mystery Lab, but only from a pool of topics you choose.">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header class="site-head">
+  <h1>Mystery Pool</h1>
+  <p class="tagline">
+    Roll a random <a href="https://portswigger.net/web-security/mystery-lab-challenge" target="_blank" rel="noopener">PortSwigger Mystery Lab</a>,
+    but only from a pool of topics you choose.
+  </p>
+  <p class="unofficial">Unofficial companion. Not affiliated with PortSwigger.</p>
+</header>
+
+<main>
+
+  <section class="panel">
+    <div class="panel-head">
+      <h2>Topics</h2>
+      <div class="panel-actions">
+        <span id="poolCount" class="count">0 selected</span>
+        <button type="button" id="selectAll" class="btn-quiet">All</button>
+        <button type="button" id="selectNone" class="btn-quiet">None</button>
+      </div>
+    </div>
+    <div id="categoryGrid" class="cat-grid"></div>
+    <noscript><p class="loading">This page needs JavaScript to pick a topic and build the link.</p></noscript>
+  </section>
+
+  <section class="panel">
+    <fieldset class="level-set">
+      <legend>Level</legend>
+      <div class="segmented" id="levelControl"></div>
+    </fieldset>
+  </section>
+
+  <section class="panel roll-panel">
+    <button type="button" id="rollBtn" class="btn-primary" disabled>Roll a lab</button>
+    <p id="status" class="status">Pick at least one topic.</p>
+    <div id="result" class="result" hidden>
+      <p class="result-cat">Lab rolled. Nothing here tells you which topic came up — that's the point.</p>
+      <button type="button" id="openLabBtn" class="btn-quiet">Open the lab</button>
+      <details class="spoiler">
+        <summary>Reveal the topic</summary>
+        <p id="resultCat" class="spoiler-body"></p>
+      </details>
+      <p class="popup-note">If the new tab didn't open, your browser blocked it — use the button above.</p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-foot">
+  <h2>What this can't do</h2>
+  <ul>
+    <li>It rolls a <em>topic</em>, not a lab — PortSwigger picks the actual lab inside that category, so the same lab can come up twice.</li>
+    <li>The roll is uniform across topics, not across labs: a category with 3 labs is as likely as one with 12.</li>
+    <li>It can't know which labs you've already completed. That lives behind an <code>HttpOnly</code> cookie on PortSwigger's origin, which no other site can read.</li>
+  </ul>
+  <p class="foot-meta">
+    No tracking, no backend, no dependencies.
+    <span id="dataStamp"></span>
+  </p>
+</footer>
+
+<script src="data/categories.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>
