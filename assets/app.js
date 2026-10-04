@@ -187,34 +187,12 @@
     el.resultCat.textContent = cat.name + ' · ' + levelName(level);
     el.spoiler.open = false;
 
-    // The lab opens first, then the waiting room takes focus in front of it.
-    // The second popup can be blocked: then the lab is already open and focused.
-    const lab = window.open(url, '_blank');
-    if (!lab) {
-      el.result.hidden = false;
-      return;
-    }
-    lab.opener = null;
+    pendingUrl = url;
+    el.resultCat.textContent = cat.name + ' · ' + levelName(level);
+    el.spoiler.open = false;
+    el.result.hidden = false;
 
-    const wait = window.open('wait.html', '_blank');
-    if (!wait) {
-      el.status.textContent = 'The waiting room was blocked, so the lab is already open in a new tab.';
-      return;
-    }
-    startWaiting(lab, wait);
-  }
-
-  // The waiting room sends 'continue' from its button or its timer. Only that
-  // window's messages count. Then this page focuses the lab and closes the room.
-  function startWaiting(lab, wait) {
-    const onMessage = (e) => {
-      if (e.origin !== location.origin || e.source !== wait) return;
-      if (!e.data || e.data.source !== 'mystery-pool' || e.data.action !== 'continue') return;
-      window.removeEventListener('message', onMessage);
-      lab.focus();
-      wait.close();
-    };
-    window.addEventListener('message', onMessage);
+    openLab(url);
   }
 
   // A throwaway anchor, not window.open: window.open returns null when noopener
