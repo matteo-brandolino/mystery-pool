@@ -186,26 +186,21 @@
     pendingUrl = url;
     el.resultCat.textContent = cat.name + ' · ' + levelName(level);
     el.spoiler.open = false;
-
-    pendingUrl = url;
-    el.resultCat.textContent = cat.name + ' · ' + levelName(level);
-    el.spoiler.open = false;
     el.result.hidden = false;
 
     openLab(url);
   }
 
-  // A throwaway anchor, not window.open: window.open returns null when noopener
-  // is set, and the anchor keeps the click's user activation past popup blockers.
+  // Opens a blank tab and navigates it from script. A renderer-initiated navigation
+  // keeps about:blank in the address bar until the response commits, and the response
+  // is a redirect to the lab, so the categoryId URL should never be shown. An anchor
+  // click would display it. noopener can't be used (window.open would return null), so
+  // the opener link is cut by hand while the tab is still same-origin about:blank.
   function openLab(url) {
-    const a = document.createElement('a');
-    a.href = url;
-    a.target = '_blank';
-    a.rel = 'noopener';
-    a.style.display = 'none';
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
+    const w = window.open('about:blank', '_blank');
+    if (!w) return;
+    w.opener = null;
+    w.location.replace(url);
   }
 
   function clearResult() {
