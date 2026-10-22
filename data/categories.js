@@ -1,6 +1,7 @@
 /* Source: POST https://portswigger.net/api/widgets (widgetId academy-launch-mystery-lab).
    "levels" is each category's availablelevels attribute. Ids 4, 10 and 15 are not exposed.
    A classic script, not a fetched JSON: it works from disk and under any sub-path.
+   "groups" is the user's own split by lab goal; an id may appear in more than one group.
    Regenerate with the command in README.md. */
 window.PS_CATEGORIES = {
   "fetched": "2026-10-04",
@@ -25,5 +26,15 @@ window.PS_CATEGORIES = {
     { "id": 21, "name": "OAuth authentication",                    "levels": [1, 2] },
     { "id": 22, "name": "File upload vulnerabilities",             "levels": [0, 1] },
     { "id": 23, "name": "JWT",                                     "levels": [0, 1, 2] }
+  ],
+  "groups": [
+    { "name": "Get access to any user",
+      "ids": [2, 5, 14, 16, 20, 9] },
+    { "name": "Promote yourself to an administrator or steal their data",
+      "ids": [1, 3, 17, 21, 23, 13] },
+    { "name": "Read the content of /home/carlos/secret",
+      "ids": [8, 7, 11, 12, 17, 22] },
+    { "name": "Misc",
+      "ids": [6, 18, 19] }
   ]
 };

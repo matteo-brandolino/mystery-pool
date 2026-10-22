@@ -40,6 +40,7 @@
   };
 
   let categories = [];
+  let groups = [];
   let categoryById = new Map();
   let pendingUrl = null;
   const pool = new Set();
@@ -73,6 +74,20 @@
     })));
   }
 
+  // Groups reference categories by id; unknown ids are dropped, and any category
+  // no group claims lands in a trailing "Other" group so it is never unreachable.
+  function loadGroups(data, cats) {
+    const known = new Map(cats.map((c) => [c.id, c]));
+    const out = (Array.isArray(data.groups) ? data.groups : []).map((g) => ({
+      name: g.name,
+      cats: g.ids.filter((id) => known.has(id)).map((id) => known.get(id))
+    }));
+    const claimed = new Set(out.flatMap((g) => g.cats.map((c) => c.id)));
+    const rest = cats.filter((c) => !claimed.has(c.id));
+    if (rest.length) out.push({ name: 'Other', cats: rest });
+    return out;
+  }
+
   function buildLevelControl() {
     LEVELS.forEach((lv) => {
       const label = document.createElement('label');
@@ -91,40 +106,55 @@
     });
   }
 
+  function buildCategory(cat) {
+    const label = document.createElement('label');
+    label.className = 'cat';
+    label.dataset.id = String(cat.id);
+
+    const box = document.createElement('input');
+    box.type = 'checkbox';
+    box.value = String(cat.id);
+    box.checked = pool.has(cat.id);
+    box.addEventListener('change', () => {
+      box.checked ? pool.add(cat.id) : pool.delete(cat.id);
+      render();
+    });
+
+    const name = document.createElement('span');
+    name.className = 'cat-name';
+    name.textContent = cat.name;
+
+    const levels = document.createElement('span');
+    levels.className = 'levels';
+    cat.levels.forEach((id) => {
+      const badge = document.createElement('span');
+      badge.className = 'lv';
+      badge.dataset.level = String(id);
+      badge.textContent = levelById.get(id).short;
+      badge.title = levelName(id) + ' labs available';
+      levels.appendChild(badge);
+    });
+
+    label.append(box, name, levels);
+    return label;
+  }
+
   function buildGrid() {
     el.grid.textContent = '';
 
-    categories.forEach((cat) => {
-      const label = document.createElement('label');
-      label.className = 'cat';
-      label.dataset.id = String(cat.id);
+    groups.forEach((group) => {
+      const section = document.createElement('section');
+      section.className = 'cat-group';
 
-      const box = document.createElement('input');
-      box.type = 'checkbox';
-      box.value = String(cat.id);
-      box.checked = pool.has(cat.id);
-      box.addEventListener('change', () => {
-        box.checked ? pool.add(cat.id) : pool.delete(cat.id);
-        render();
-      });
+      const title = document.createElement('h3');
+      title.textContent = group.name;
 
-      const name = document.createElement('span');
-      name.className = 'cat-name';
-      name.textContent = cat.name;
+      const grid = document.createElement('div');
+      grid.className = 'cat-grid';
+      group.cats.forEach((cat) => grid.appendChild(buildCategory(cat)));
 
-      const levels = document.createElement('span');
-      levels.className = 'levels';
-      cat.levels.forEach((id) => {
-        const badge = document.createElement('span');
-        badge.className = 'lv';
-        badge.dataset.level = String(id);
-        badge.textContent = levelById.get(id).short;
-        badge.title = levelName(id) + ' labs available';
-        levels.appendChild(badge);
-      });
-
-      label.append(box, name, levels);
-      el.grid.appendChild(label);
+      section.append(title, grid);
+      el.grid.appendChild(section);
     });
   }
 
@@ -138,6 +168,7 @@
       const cat = categoryById.get(Number(label.dataset.id));
       const ok = isEligible(cat, level);
 
+      label.querySelector('input').checked = pool.has(cat.id);
       label.classList.toggle('is-ineligible', !ok);
       label.classList.toggle('is-picked', pool.has(cat.id));
       label.title = ok ? '' :
@@ -274,6 +305,7 @@
     }
     categories = loaded;
     categoryById = new Map(categories.map((c) => [c.id, c]));
+    groups = loadGroups(data, categories);
     el.dataStamp.textContent = 'Topic data captured ' + data.fetched + '.';
     buildLevelControl();
     buildGrid();

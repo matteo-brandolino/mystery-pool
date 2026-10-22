@@ -94,6 +94,15 @@ code {
 
 .count { font-size: 0.82rem; color: var(--text-dim); margin-right: 4px; }
 
+.cat-groups { display: grid; gap: 20px; }
+
+.cat-group h3 {
+  margin: 0 0 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
 .cat-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(255px, 1fr));
@@ -291,4 +300,67 @@ code {
 @media (max-width: 520px) {
   .cat-grid { grid-template-columns: 1fr; }
   .btn-primary { width: 100%; }
+}
+
+/* Wide screens: everything on one page, no scrolling. Topics on the left in a
+   2x2 block of groups, controls on the right, footer notes in a strip below. */
+@media (min-width: 1000px) {
+  body { padding: 0 24px 16px; }
+
+  main, .site-head, .site-foot { max-width: 1280px; }
+
+  .site-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px 20px;
+    padding: 16px 0 12px;
+  }
+  .site-head h1 { font-size: 1.4rem; }
+  .tagline, .unofficial { margin: 0; font-size: 0.85rem; }
+  .unofficial { margin-left: auto; }
+
+  main {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    grid-template-rows: auto 1fr;
+    gap: 12px;
+    align-items: start;
+  }
+  main > .panel { margin: 0; padding: 14px; }
+  main > .panel:first-child { grid-row: 1 / span 3; }
+
+  .panel-head { margin-bottom: 10px; }
+
+  .cat-groups { grid-template-columns: 1fr 1fr; gap: 14px 16px; }
+  .cat-group h3 { font-size: 0.82rem; margin-bottom: 6px; }
+  .cat-grid { grid-template-columns: 1fr; gap: 4px; }
+  .cat { padding: 6px 10px; }
+  .cat-name { font-size: 0.85rem; }
+
+  .level-set legend { margin-bottom: 8px; }
+  .segmented { gap: 6px; }
+  .segmented span { padding: 5px 9px; font-size: 0.84rem; }
+
+  .status { margin-top: 10px; }
+  .result { margin-top: 12px; padding-top: 10px; }
+  .result-cat { margin-bottom: 8px; }
+  .spoiler { margin-top: 10px; }
+  .popup-note { margin-top: 6px; }
+  .expect { margin-top: 14px; padding-top: 10px; font-size: 0.78rem; }
+  .expect li { margin-bottom: 3px; }
+
+  .site-foot {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 4px 24px;
+    align-items: start;
+    margin-top: 12px;
+    padding-top: 10px;
+    font-size: 0.78rem;
+  }
+  .site-foot h2 { margin: 0; }
+  .site-foot ul { padding-left: 16px; }
+  .site-foot li { margin-bottom: 2px; }
+  .foot-meta { margin: 0; }
 }
