@@ -28,13 +28,13 @@ window.PS_CATEGORIES = {
     { "id": 23, "name": "JWT",                                     "levels": [0, 1, 2] }
   ],
   "groups": [
-    { "name": "Get access to any user",
+    { "phase": "Foothold", "name": "Get access to any user",
       "ids": [2, 5, 14, 16, 20, 9] },
-    { "name": "Promote yourself to an administrator or steal their data",
+    { "phase": "Escalation", "name": "Promote yourself to an administrator or steal their data",
       "ids": [1, 3, 17, 21, 23, 13] },
-    { "name": "Read the content of /home/carlos/secret",
+    { "phase": "Exfiltration", "name": "Read the content of /home/carlos/secret",
       "ids": [8, 7, 11, 12, 17, 22] },
-    { "name": "Misc",
+    { "phase": "Misc", "name": "Everything else",
       "ids": [6, 18, 19] }
   ]
 };

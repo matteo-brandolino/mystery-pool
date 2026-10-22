@@ -79,6 +79,7 @@
   function loadGroups(data, cats) {
     const known = new Map(cats.map((c) => [c.id, c]));
     const out = (Array.isArray(data.groups) ? data.groups : []).map((g) => ({
+      phase: g.phase,
       name: g.name,
       cats: g.ids.filter((id) => known.has(id)).map((id) => known.get(id))
     }));
@@ -139,12 +140,38 @@
     return label;
   }
 
+  // One checkbox per group: ticks or clears every topic in it. Its state is derived
+  // from the pool in render(), so it can show "some" (indeterminate) as well.
+  function buildGroupToggle(group) {
+    const label = document.createElement('label');
+    label.className = 'group-toggle';
+    label.title = 'Select all topics in ' + group.name;
+
+    const box = document.createElement('input');
+    box.type = 'checkbox';
+    box.addEventListener('change', () => {
+      group.cats.forEach((c) => (box.checked ? pool.add(c.id) : pool.delete(c.id)));
+      render();
+    });
+
+    const text = document.createElement('span');
+    text.textContent = 'All';
+
+    label.append(box, text);
+    group.toggle = box;
+    return label;
+  }
+
   function buildGrid() {
     el.grid.textContent = '';
 
     groups.forEach((group) => {
       const section = document.createElement('section');
       section.className = 'cat-group';
+
+      const phase = document.createElement('p');
+      phase.className = 'cat-phase';
+      phase.textContent = group.phase || '';
 
       const title = document.createElement('h3');
       title.textContent = group.name;
@@ -153,7 +180,13 @@
       grid.className = 'cat-grid';
       group.cats.forEach((cat) => grid.appendChild(buildCategory(cat)));
 
-      section.append(title, grid);
+      const head = document.createElement('div');
+      head.className = 'cat-group-head';
+      const heading = document.createElement('div');
+      heading.append(phase, title);
+      head.append(heading, buildGroupToggle(group));
+
+      section.append(head, grid);
       el.grid.appendChild(section);
     });
   }
@@ -177,6 +210,12 @@
       label.querySelectorAll('.lv').forEach((badge) => {
         badge.classList.toggle('is-active', Number(badge.dataset.level) === level);
       });
+    });
+
+    groups.forEach((g) => {
+      const n = g.cats.filter((c) => pool.has(c.id)).length;
+      g.toggle.checked = n > 0 && n === g.cats.length;
+      g.toggle.indeterminate = n > 0 && n < g.cats.length;
     });
 
     el.poolCount.textContent = inPool.length + ' selected';
