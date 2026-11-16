@@ -1,19 +1,17 @@
 /*
- * URL shape copied from updateUrl() in /bundles/widgets/mysterylab.js. It is built
- * by plain concatenation on purpose: the original does not encode the referrer,
- * and URLSearchParams would turn its slashes into %2F.
+ * The page: builds the topic grid and level control, keeps the pool, and asks
+ * MysteryRoll (assets/roll.js) what to launch.
  *
  * onlyCompleted is never sent: this site cannot see which labs you completed.
  */
 (() => {
   'use strict';
 
-  const PS_ORIGIN = 'https://portswigger.net';
-  const REFERRER = '/web-security/mystery-lab-challenge';
+  const Roll = window.MysteryRoll;
 
   // PortSwigger's own level ids, sent in the URL as they are. -1 is "Any".
   // Always numbers internally; strings exist only at the DOM boundary.
-  const ANY = -1;
+  const ANY = Roll.ANY;
   const LEVELS = [
     { id: ANY, name: 'Any' },
     { id: 0, name: 'Apprentice', short: 'App' },
@@ -45,19 +43,13 @@
   let pendingUrl = null;
   const pool = new Set();
 
-  const launchUrl = (categoryId, level) =>
-    PS_ORIGIN + '/academy/labs/launchMystery?categoryId=' + categoryId +
-    '&level=' + level + '&referrer=' + REFERRER;
-
   const currentLevel = () => Number(el.levelControl.querySelector('input:checked').value);
 
-  // Port of isCategoryValidForLevel() in mysterylab.js.
-  const isEligible = (cat, level) =>
-    level === ANY || cat.levels.includes(level);
+  const isEligible = Roll.isEligible;
 
-  const picked = () => categories.filter((c) => pool.has(c.id));
+  const picked = () => Roll.inPool(categories, [...pool]);
 
-  const rollable = (level) => picked().filter((c) => isEligible(c, level));
+  const rollable = (level) => Roll.eligible(categories, [...pool], level);
 
   const levelList = (cat, separator) => cat.levels.map(levelName).join(separator);
 
@@ -245,11 +237,11 @@
 
   function roll() {
     const level = currentLevel();
-    const eligible = rollable(level);
-    if (eligible.length === 0) return;
+    const rolled = Roll.pick(categories, [...pool], level, Math.random);
+    if (!rolled) return;
 
-    const cat = eligible[Math.floor(Math.random() * eligible.length)];
-    const url = launchUrl(cat.id, level);
+    const cat = rolled.topic;
+    const url = rolled.url;
 
     // Neither the URL nor the category is shown: the URL carries categoryId,
     // and that would spoil the mystery. The name sits behind a collapsed toggle.
