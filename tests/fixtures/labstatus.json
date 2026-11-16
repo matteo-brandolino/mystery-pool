@@ -1,0 +1,57 @@
+[
+ {
+  "WidgetId": "academy-labstatus",
+  "Html": "\n\n    <div class=\"widgetcontainer-lab-link \" id=9f29effeafaa743b0f87d5682f68184437df0b23db7ce32b2377869a95045976>\n        <span>LAB</span>\n        <div class=\"flex-columns\">\n            <span class=\"label-light-blue-small\">PRACTITIONER</span>\n            <a href=\"/web-security/prototype-pollution/client-side/browser-apis/lab-prototype-pollution-client-side-prototype-pollution-via-browser-apis\">Client-side prototype pollution via browser APIs</a>\n        </div>\n    </div>\n",
+  "ScriptSrc": ""
+ },
+ {
+  "WidgetId": "academy-labstatus",
+  "Html": "\n\n    <div class=\"widgetcontainer-lab-link \" id=779d6590142ec062340c7103fc3f043c4a7fcf81748ef0740fc02b5dec467114>\n        <span>LAB</span>\n        <div class=\"flex-columns\">\n            <span class=\"label-light-blue-small\">PRACTITIONER</span>\n            <a href=\"/web-security/prototype-pollution/client-side/lab-prototype-pollution-dom-xss-via-client-side-prototype-pollution\">DOM XSS via client-side prototype pollution</a>\n        </div>\n    </div>\n",
+  "ScriptSrc": ""
+ },
+ {
+  "WidgetId": "academy-labstatus",
+  "Html": "\n\n    <div class=\"widgetcontainer-lab-link \" id=3c3d65889eb00f3949889451470ca5fffc13f3a2bf9cc1d93d539073460c15a1>\n        <span>LAB</span>\n        <div class=\"flex-columns\">\n            <span class=\"label-light-blue-small\">PRACTITIONER</span>\n            <a href=\"/web-security/prototype-pollution/client-side/lab-prototype-pollution-dom-xss-via-an-alternative-prototype-pollution-vector\">DOM XSS via an alternative prototype pollution vector</a>\n        </div>\n    </div>\n",
+  "ScriptSrc": ""
+ },
+ {
+  "WidgetId": "academy-labstatus",
+  "Html": "\n\n    <div class=\"widgetcontainer-lab-link \" id=e62603f6c9b96d8f356c0843377815ce5de0b885389f3cad18552a666cd8246c>\n        <span>LAB</span>\n        <div class=\"flex-columns\">\n            <span class=\"label-light-blue-small\">PRACTITIONER</span>\n            <a href=\"/web-security/prototype-pollution/client-side/lab-prototype-pollution-client-side-prototype-pollution-via-flawed-sanitization\">Client-side prototype pollution via flawed sanitization</a>\n        </div>\n    </div>\n",
+  "ScriptSrc": ""
+ },
+ {
+  "WidgetId": "academy-labstatus",
+  "Html": "\n\n    <div class=\"widgetcontainer-lab-link \" id=ede1150ea7af1f2a14c2724937aa94df976dcc0eec9169271e4dd546403491a1>\n        <span>LAB</span>\n        <div class=\"flex-columns\">\n            <span class=\"label-light-blue-small\">PRACTITIONER</span>\n            <a href=\"/web-security/prototype-pollution/client-side/lab-prototype-pollution-client-side-prototype-pollution-in-third-party-libraries\">Client-side prototype pollution in third-party libraries</a>\n        </div>\n    </div>\n",
+  "ScriptSrc": ""
+ },
+ {
+  "WidgetId": "academy-labstatus",
+  "Html": "\n\n    <div class=\"widgetcontainer-lab-link \" id=59d3f1af71bd2e19b66ac67efd8caf8448b7b6a7a9c00cdd2881aea324d1fe37>\n        <span>LAB</span>\n        <div class=\"flex-columns\">\n            <span class=\"label-light-blue-small\">PRACTITIONER</span>\n            <a href=\"/web-security/prototype-pollution/server-side/lab-privilege-escalation-via-server-side-prototype-pollution\">Privilege escalation via server-side prototype pollution</a>\n        </div>\n    </div>\n",
+  "ScriptSrc": ""
+ },
+ {
+  "WidgetId": "academy-labstatus",
+  "Html": "\n\n    <div class=\"widgetcontainer-lab-link \" id=22dd244c42dc00fb8b49e2c69f0ebc2f6537d2e956386720e6a9e40bca64c3b4>\n        <span>LAB</span>\n        <div class=\"flex-columns\">\n            <span class=\"label-light-blue-small\">PRACTITIONER</span>\n            <a href=\"/web-security/prototype-pollution/server-side/lab-detecting-server-side-prototype-pollution-without-polluted-property-reflection\">Detecting server-side prototype pollution without polluted property reflection</a>\n        </div>\n    </div>\n",
+  "ScriptSrc": ""
+ },
+ {
+  "WidgetId": "academy-labstatus",
+  "Html": "\n\n    <div class=\"widgetcontainer-lab-link \" id=5748a03c200eec26fb8dd053f332832b59a5509cad225088b2a093d71159ff85>\n        <span>LAB</span>\n        <div class=\"flex-columns\">\n            <span class=\"label-light-blue-small\">PRACTITIONER</span>\n            <a href=\"/web-security/prototype-pollution/server-side/lab-bypassing-flawed-input-filters-for-server-side-prototype-pollution\">Bypassing flawed input filters for server-side prototype pollution</a>\n        </div>\n    </div>\n",
+  "ScriptSrc": ""
+ },
+ {
+  "WidgetId": "academy-labstatus",
+  "Html": "\n\n    <div class=\"widgetcontainer-lab-link \" id=e3c8172d1c47e73a3a5471a162814889082f50012a8764f72852dbd07fa36474>\n        <span>LAB</span>\n        <div class=\"flex-columns\">\n            <span class=\"label-light-blue-small\">PRACTITIONER</span>\n            <a href=\"/web-security/prototype-pollution/server-side/lab-remote-code-execution-via-server-side-prototype-pollution\">Remote code execution via server-side prototype pollution</a>\n        </div>\n    </div>\n",
+  "ScriptSrc": ""
+ },
+ {
+  "WidgetId": "academy-labstatus",
+  "Html": "\n\n    <div class=\"widgetcontainer-lab-link \" id=df60ba65274e00bd34944f5e3edc74c16477909a2e19e5d3c9acc84e064712d7>\n        <span>LAB</span>\n        <div class=\"flex-columns\">\n            <span class=\"label-purple-small\">EXPERT</span>\n            <a href=\"/web-security/prototype-pollution/server-side/lab-exfiltrating-sensitive-data-via-server-side-prototype-pollution\">Exfiltrating sensitive data via server-side prototype pollution</a>\n        </div>\n    </div>\n",
+  "ScriptSrc": ""
+ },
+ {
+  "WidgetId": "academy-labstatus",
+  "Html": "\n\n    <div class=\"widgetcontainer-lab-link \" id=ccfdc81094e272982bb5995e349d1fee4cb10179392ed6b49586fed5837006a0>\n        <span>LAB</span>\n        <div class=\"flex-columns\">\n            <span class=\"label-light-green-small\">APPRENTICE</span>\n            <a href=\"/web-security/clickjacking/lab-basic-csrf-protected\">Basic clickjacking with CSRF token protection</a>\n        </div>\n    </div>\n",
+  "ScriptSrc": ""
+ }
+]

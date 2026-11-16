@@ -30,6 +30,30 @@ something the client can produce, so there's no reason to expect the server to p
 But the launch endpoint takes a scalar `categoryId`. So pick the category from a subset yourself
 and pass one id — exactly what the server already handles. That's all this page does.
 
+## Topics the Mystery Lab doesn't cover
+
+The widget exposes 20 categories. The Academy has more — OS command injection, Clickjacking,
+WebSockets, Prototype pollution, API testing, GraphQL, Race conditions, NoSQL injection, Web LLM
+attacks, Web cache deception — and several of them are on the BSCP exam. Asking `launchMystery` for
+one of them directly doesn't work either: `categoryId=10` (OS command injection) answers
+*"Apologies, there are no labs that match your request."* There is no mystery pool behind them.
+
+So these are **direct topics**. When the roll lands on one, this page picks one of that topic's
+labs itself, uniformly among the labs at the chosen level, and opens it the way the lab page's
+"ACCESS THE LAB" button does:
+
+```
+GET /academy/labs/launch/<labId>?referrer=<lab page path, URL-encoded>
+```
+
+It's the same kind of top-level navigation as `launchMystery`, so the session cookie rides along the
+same way. The pool can mix both kinds freely; the topic is still drawn uniformly across all of them.
+
+The trade-off: a direct lab is an ordinary lab, so once it opens, PortSwigger's banner shows its
+title. The topic stays random, but the surprise ends when the lab loads. Nothing on another origin
+can hide that. Prototype pollution is split into client-side and server-side, because they belong
+to different stages of an exam run.
+
 ## How the login works (it doesn't need handling)
 
 PortSwigger's session cookie is:
@@ -69,8 +93,9 @@ that URL is right there in the address bar.
 
 ## What it can't do
 
-- It rolls a **topic**, not a lab. PortSwigger picks the actual lab inside the category, so the
-  same lab can come up twice and there's no way to know in advance which one you'll get.
+- For mystery topics it rolls a **topic**, not a lab. PortSwigger picks the actual lab inside the
+  category, so the same lab can come up twice and there's no way to know in advance which one you'll get.
+- A direct topic shows the lab's title once the lab opens (see above).
 - The roll is uniform across topics, not across labs: a category with 3 labs is as likely as one
   with 12.
 - It can't skip labs you've already completed.
@@ -113,8 +138,25 @@ Deployed with GitHub Pages: *Settings → Pages → Deploy from a branch → `ma
 | 22 | File upload vulnerabilities | Apprentice, Practitioner |
 | 23 | JWT | Apprentice, Practitioner, Expert |
 
+Direct topics (no mystery pool; labs from the all-labs page):
+
+| id | topic | levels |
+|----|-------|--------|
+| 4 | Clickjacking | Apprentice, Practitioner |
+| 10 | OS command injection | Apprentice, Practitioner |
+| 15 | WebSockets | Apprentice, Practitioner |
+| 100 | Prototype pollution (client-side) | Practitioner |
+| 101 | Prototype pollution (server-side) | Practitioner, Expert |
+| 102 | API testing | Apprentice, Practitioner, Expert |
+| 103 | GraphQL API vulnerabilities | Apprentice, Practitioner |
+| 104 | Race conditions | Apprentice, Practitioner, Expert |
+| 105 | NoSQL injection | Apprentice, Practitioner |
+| 106 | Web LLM attacks | Apprentice, Practitioner, Expert |
+| 107 | Web cache deception | Apprentice, Practitioner, Expert |
+
 Levels map to `level=0` (Apprentice), `1` (Practitioner), `2` (Expert), `-1` (Any). Ids 4, 10 and
-15 are not exposed by the widget.
+15 are PortSwigger's own (the ids the widget skips). The others start at 100 so they can't collide
+with an id PortSwigger adds to the widget later. Essential skills is left out on purpose.
 
 ## Refreshing the topic list
 
@@ -139,6 +181,26 @@ print(json.dumps(sorted(cats, key=lambda c: c["id"]), indent=2))
 Paste the result as the `categories` array inside `data/categories.js` and bump `fetched`. The
 file is one assignment wrapping the same JSON, so the payload stays valid JSON. The `availablecompletedlevels`
 attribute is per-account, which is why it isn't stored here.
+
+## Refreshing the direct topics
+
+```bash
+python3 scripts/fetch_direct_topics.py           # print them as JSON
+python3 scripts/fetch_direct_topics.py --write   # replace them in data/categories.js
+```
+
+Standard library only. It reads `/web-security/all-labs` for each section's lab ids, then asks the
+unauthenticated `academy-labstatus` widget for each lab's level, title and page. Sections it
+doesn't recognise, and labs it can't place, are reported on stderr rather than dropped silently.
+Mystery categories and `groups` are left as they are; a new direct topic has to be added to a group
+by hand (or it lands in a trailing "Other" group).
+
+## Tests
+
+```bash
+node --test                               # the roll (assets/roll.js)
+python3 -m unittest discover -s tests     # the generator, against saved pages in tests/fixtures
+```
 
 ## License
 

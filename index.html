@@ -55,7 +55,7 @@
     <div class="expect">
       <p class="expect-title">What to expect</p>
       <ol>
-        <li>The lab opens in a new tab. For a few seconds it may stay blank, or show the launch address while PortSwigger starts the lab. That address contains the topic id, so look away from the address bar if you want the surprise.</li>
+        <li>The lab opens in a new tab. For a few seconds it may stay blank, or show the launch address while PortSwigger starts the lab. That address contains the topic or lab id, so look away from the address bar if you want the surprise.</li>
         <li>If you're not logged in to PortSwigger, the lab tab goes to the login page first. Log in and you land on the lab.</li>
         <li>If your browser blocks the new tab, use the button above.</li>
       </ol>
@@ -68,6 +68,7 @@
   <h2>What this can't do</h2>
   <ul>
     <li>It rolls a <em>topic</em>, not a lab — PortSwigger picks the actual lab inside that category, so the same lab can come up twice.</li>
+    <li>Some topics have no Mystery Lab (OS command injection, Prototype pollution, API testing, GraphQL…). For those it picks a lab itself and opens it like the lab's own button would, so the lab's title is visible once it loads.</li>
     <li>The roll is uniform across topics, not across labs: a category with 3 labs is as likely as one with 12.</li>
     <li>It can't know which labs you've already completed. That lives behind an <code>HttpOnly</code> cookie on PortSwigger's origin, which no other site can read.</li>
   </ul>
