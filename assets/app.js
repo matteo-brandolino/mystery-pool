@@ -53,17 +53,36 @@
 
   const levelList = (cat, separator) => cat.levels.map(levelName).join(separator);
 
+  const realLevel = (id) => id !== ANY && levelById.has(id);
+
+  const isLab = (lab) => lab && typeof lab.labId === 'string' && /^[0-9a-f]+$/.test(lab.labId) &&
+    realLevel(lab.level) && typeof lab.title === 'string' &&
+    typeof lab.path === 'string' && lab.path.startsWith('/');
+
+  // A direct topic's levels come from its labs; a mystery topic's from the widget.
+  function loadTopic(c) {
+    if (c.kind === 'direct') {
+      if (!Array.isArray(c.labs) || c.labs.length === 0 || !c.labs.every(isLab)) return null;
+      const labs = Object.freeze(c.labs.map((lab) => Object.freeze({ ...lab })));
+      return Object.freeze({
+        id: c.id, name: c.name, kind: 'direct', labs,
+        levels: Object.freeze([...new Set(labs.map((lab) => lab.level))].sort((a, b) => a - b))
+      });
+    }
+    if (!Array.isArray(c.levels)) return null;
+    return Object.freeze({
+      id: c.id, name: c.name, kind: 'mystery',
+      levels: Object.freeze(c.levels.filter(realLevel).sort((a, b) => a - b))
+    });
+  }
+
+  // Any malformed topic rejects the whole file, so a bad regeneration is visible.
   function loadCategories(data) {
     if (!data || typeof data.fetched !== 'string' || !Array.isArray(data.categories)) {
       return null;
     }
-    return Object.freeze(data.categories.map((c) => Object.freeze({
-      id: c.id,
-      name: c.name,
-      levels: Object.freeze(c.levels
-        .filter((id) => id !== ANY && levelById.has(id))
-        .sort((a, b) => a - b))
-    })));
+    const topics = data.categories.map(loadTopic);
+    return topics.every(Boolean) ? Object.freeze(topics) : null;
   }
 
   // Groups reference categories by id; unknown ids are dropped, and any category
@@ -246,11 +265,24 @@
     // Neither the URL nor the category is shown: the URL carries categoryId,
     // and that would spoil the mystery. The name sits behind a collapsed toggle.
     pendingUrl = url;
-    el.resultCat.textContent = cat.name + ' · ' + levelName(level);
+    showReveal(cat, rolled.lab, level);
     el.spoiler.open = false;
     el.result.hidden = false;
 
     openLab(url);
+  }
+
+  // A direct lab also names the lab and links its description page, since the lab
+  // banner shows the title anyway once it opens.
+  function showReveal(cat, lab, level) {
+    el.resultCat.textContent = cat.name + ' · ' + levelName(level);
+    if (!lab) return;
+    const link = document.createElement('a');
+    link.href = 'https://portswigger.net' + lab.path;
+    link.target = '_blank';
+    link.rel = 'noopener';
+    link.textContent = lab.title;
+    el.resultCat.append(document.createElement('br'), link);
   }
 
   // Opens a blank tab and navigates it from script. A renderer-initiated navigation

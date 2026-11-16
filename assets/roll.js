@@ -3,9 +3,13 @@
  * A classic script (window.MysteryRoll) so the page works from disk; also a
  * CommonJS module so Node's test runner can load it.
  *
- * Launch URL copied from updateUrl() in /bundles/widgets/mysterylab.js. It is built
- * by plain concatenation on purpose: the original does not encode the referrer,
- * and URLSearchParams would turn its slashes into %2F.
+ * Two kinds of topic:
+ *  - mystery: PortSwigger picks the lab. URL copied from updateUrl() in
+ *    /bundles/widgets/mysterylab.js, built by plain concatenation on purpose: the
+ *    original does not encode the referrer.
+ *  - direct: no mystery pool exists, so a lab is picked here and launched the way
+ *    the "ACCESS THE LAB" button (academy-launchlab widget) does, with the lab's own
+ *    page as an encoded referrer.
  */
 (function (root, factory) {
   const api = factory();
@@ -23,6 +27,10 @@
   const mysteryUrl = (categoryId, level) =>
     PS_ORIGIN + '/academy/labs/launchMystery?categoryId=' + categoryId +
     '&level=' + level + '&referrer=' + MYSTERY_REFERRER;
+
+  const directUrl = (lab) =>
+    PS_ORIGIN + '/academy/labs/launch/' + lab.labId +
+    '?referrer=' + encodeURIComponent(lab.path);
 
   // Port of isCategoryValidForLevel() in mysterylab.js.
   const isEligible = (topic, level) => level === ANY || topic.levels.includes(level);
@@ -43,7 +51,12 @@
     const candidates = eligible(topics, poolIds, level);
     if (candidates.length === 0) return null;
     const topic = choose(candidates, random);
-    return { topic, lab: null, url: mysteryUrl(topic.id, level) };
+    if (topic.kind !== 'direct') {
+      return { topic, lab: null, url: mysteryUrl(topic.id, level) };
+    }
+    const labs = topic.labs.filter((lab) => level === ANY || lab.level === level);
+    const lab = choose(labs, random);
+    return { topic, lab, url: directUrl(lab) };
   }
 
   return Object.freeze({ ANY, isEligible, inPool, eligible, pick });
