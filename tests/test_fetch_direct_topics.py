@@ -51,7 +51,7 @@ class BuildTopics(unittest.TestCase):
             ('sql-injection', ['s1']),
             ('clickjacking', ['c1']),
             ('essential-skills', ['e1']),
-            ('prototype-pollution', ['p1', 'p2', 'p3']),
+            ('prototype-pollution', ['p1', 'p2', 'p3', 'p4']),
             ('brand-new-topic', ['n1']),
         ]
         self.labs = {
@@ -61,13 +61,15 @@ class BuildTopics(unittest.TestCase):
             'p1': lab('p1', '/web-security/prototype-pollution/client-side/lab-x'),
             'p2': lab('p2', '/web-security/prototype-pollution/server-side/lab-y', 2),
             'p3': lab('p3', '/web-security/prototype-pollution/lab-z'),
+            'p4': lab('p4', '/web-security/prototype-pollution/server-side/'
+                            'lab-remote-code-execution-via-server-side-prototype-pollution'),
             'n1': lab('n1', '/web-security/brand-new-topic/lab-x'),
         }
         self.topics, self.warnings = f.build_topics(self.sections, self.labs)
 
     def test_maps_sections_to_direct_topic_ids(self):
         by_id = {t['id']: t for t in self.topics}
-        self.assertEqual(sorted(by_id), [4, 100, 101])
+        self.assertEqual(sorted(by_id), [4, 100, 101, 108])
         self.assertEqual(by_id[4], {'id': 4, 'name': 'Clickjacking', 'kind': 'direct',
                                     'labs': [self.labs['c1']]})
 
@@ -75,6 +77,11 @@ class BuildTopics(unittest.TestCase):
         by_id = {t['id']: t for t in self.topics}
         self.assertEqual([x['labId'] for x in by_id[100]['labs']], ['p1'])
         self.assertEqual([x['labId'] for x in by_id[101]['labs']], ['p2'])
+
+    def test_the_rce_lab_is_its_own_topic(self):
+        by_id = {t['id']: t for t in self.topics}
+        self.assertEqual(by_id[108]['name'], 'Prototype pollution (server-side RCE)')
+        self.assertEqual([x['labId'] for x in by_id[108]['labs']], ['p4'])
 
     def test_skips_mystery_and_essential_skills_sections(self):
         names = {t['name'] for t in self.topics}

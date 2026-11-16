@@ -51,8 +51,9 @@ same way. The pool can mix both kinds freely; the topic is still drawn uniformly
 
 The trade-off: a direct lab is an ordinary lab, so once it opens, PortSwigger's banner shows its
 title. The topic stays random, but the surprise ends when the lab loads. Nothing on another origin
-can hide that. Prototype pollution is split into client-side and server-side, because they belong
-to different stages of an exam run.
+can hide that. Prototype pollution is split into client-side and server-side, and the one
+server-side lab that ends in remote code execution is a topic of its own (108), so it can sit with
+the exfiltration topics while the rest stays with privilege escalation.
 
 ## How the login works (it doesn't need handling)
 
@@ -147,6 +148,7 @@ Direct topics (no mystery pool; labs from the all-labs page):
 | 15 | WebSockets | Apprentice, Practitioner |
 | 100 | Prototype pollution (client-side) | Practitioner |
 | 101 | Prototype pollution (server-side) | Practitioner, Expert |
+| 108 | Prototype pollution (server-side RCE) | Practitioner |
 | 102 | API testing | Apprentice, Practitioner, Expert |
 | 103 | GraphQL API vulnerabilities | Apprentice, Practitioner |
 | 104 | Race conditions | Apprentice, Practitioner, Expert |

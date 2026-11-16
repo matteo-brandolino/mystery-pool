@@ -3,7 +3,7 @@
    A topic without "kind" is a mystery category. "kind": "direct" marks a topic with no
    mystery pool: it carries its own "labs" (from the all-labs page) and its levels are
    derived from them. Direct topics use PortSwigger's id where it has one (4, 10, 15)
-   and 100+ otherwise; scripts/fetch_direct_topics.py --write regenerates them.
+   and 100+ otherwise (108 is the single server-side prototype pollution RCE lab); scripts/fetch_direct_topics.py --write regenerates them.
    A classic script, not a fetched JSON: it works from disk and under any sub-path.
    "groups" is the user's own split by lab goal; an id may appear in more than one group.
    Regenerate the mystery categories with the command in README.md. */
@@ -103,9 +103,6 @@ window.PS_CATEGORIES = {
       { "labId": "5748a03c200eec26fb8dd053f332832b59a5509cad225088b2a093d71159ff85", "level": 1,
         "title": "Bypassing flawed input filters for server-side prototype pollution",
         "path": "/web-security/prototype-pollution/server-side/lab-bypassing-flawed-input-filters-for-server-side-prototype-pollution" },
-      { "labId": "e3c8172d1c47e73a3a5471a162814889082f50012a8764f72852dbd07fa36474", "level": 1,
-        "title": "Remote code execution via server-side prototype pollution",
-        "path": "/web-security/prototype-pollution/server-side/lab-remote-code-execution-via-server-side-prototype-pollution" },
       { "labId": "df60ba65274e00bd34944f5e3edc74c16477909a2e19e5d3c9acc84e064712d7", "level": 2,
         "title": "Exfiltrating sensitive data via server-side prototype pollution",
         "path": "/web-security/prototype-pollution/server-side/lab-exfiltrating-sensitive-data-via-server-side-prototype-pollution" }
@@ -220,15 +217,20 @@ window.PS_CATEGORIES = {
       { "labId": "988579f4180d533b4ca2e244a488d7d252f5b1aef28508ea8c5284936740d9ac", "level": 2,
         "title": "Exploiting exact-match cache rules for web cache deception",
         "path": "/web-security/web-cache-deception/lab-wcd-exploiting-exact-match-cache-rules" }
+    ] },
+    { "id": 108, "name": "Prototype pollution (server-side RCE)", "kind": "direct", "labs": [
+      { "labId": "e3c8172d1c47e73a3a5471a162814889082f50012a8764f72852dbd07fa36474", "level": 1,
+        "title": "Remote code execution via server-side prototype pollution",
+        "path": "/web-security/prototype-pollution/server-side/lab-remote-code-execution-via-server-side-prototype-pollution" }
     ] }
   ],
   "groups": [
     { "phase": "Foothold", "name": "Get access to any user",
       "ids": [2, 5, 14, 16, 20, 9] },
     { "phase": "Escalation", "name": "Promote yourself to an administrator or steal their data",
-      "ids": [1, 3, 17, 21, 23, 13, 102, 103, 100] },
+      "ids": [1, 3, 17, 21, 23, 13, 102, 103, 100, 101] },
     { "phase": "Exfiltration", "name": "Read the content of /home/carlos/secret",
-      "ids": [8, 7, 11, 12, 17, 22, 101, 10] },
+      "ids": [8, 7, 11, 12, 17, 22, 108, 10] },
     { "phase": "Misc", "name": "Everything else",
       "ids": [6, 18, 19, 4, 15, 104, 105, 106, 107] }
   ]

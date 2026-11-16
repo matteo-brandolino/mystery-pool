@@ -42,7 +42,13 @@ DIRECT = {
     'web-cache-deception': (107, 'Web cache deception'),
 }
 
-# Split by the lab's path, since the guide puts the two halves in different phases.
+# Prototype pollution is split by the lab's path. One lab is pulled out on its own,
+# because it ends in remote code execution and so belongs to the exfiltration phase.
+PROTOTYPE_POLLUTION_LABS = {
+    '/web-security/prototype-pollution/server-side/'
+    'lab-remote-code-execution-via-server-side-prototype-pollution':
+        (108, 'Prototype pollution (server-side RCE)'),
+}
 PROTOTYPE_POLLUTION = {
     '/client-side/': (100, 'Prototype pollution (client-side)'),
     '/server-side/': (101, 'Prototype pollution (server-side)'),
@@ -101,7 +107,8 @@ def build_topics(sections, labs):
             elif anchor in DIRECT:
                 add(*DIRECT[anchor], lab)
             else:
-                half = [v for k, v in PROTOTYPE_POLLUTION.items() if k in lab['path']]
+                half = ([PROTOTYPE_POLLUTION_LABS[lab['path']]] if lab['path'] in PROTOTYPE_POLLUTION_LABS
+                        else [v for k, v in PROTOTYPE_POLLUTION.items() if k in lab['path']])
                 if half:
                     add(*half[0], lab)
                 else:
