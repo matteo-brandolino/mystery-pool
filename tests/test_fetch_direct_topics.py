@@ -35,6 +35,11 @@ class ParseLabstatus(unittest.TestCase):
         self.assertEqual(labs[-2]['level'], 2)
         self.assertEqual(labs[0]['level'], 1)
 
+    def test_an_unreadable_widget_is_none_not_a_crash(self):
+        odd = LABSTATUS[-1]['Html'].replace('APPRENTICE', 'GRANDMASTER')
+        self.assertIsNone(f.parse_labstatus(odd))
+        self.assertIsNone(f.parse_labstatus('<div>gone</div>'))
+
 
 def lab(labId, path, level=1):
     return {'labId': labId, 'level': level, 'title': labId, 'path': path}
@@ -100,7 +105,16 @@ class DataFile(unittest.TestCase):
         new = [{'id': 4, 'name': 'Clickjacking', 'kind': 'direct', 'labs': []}]
         merged = f.merge(data, new, '2026-11-16')
         self.assertEqual([c['id'] for c in merged['categories']], [1, 4])
-        self.assertEqual(merged['fetched'], '2026-11-16')
+        self.assertEqual(merged['directFetched'], '2026-11-16')
+        self.assertEqual(merged['fetched'], 'old')
+
+    def test_merge_refuses_a_direct_id_that_is_already_a_mystery_category(self):
+        data = {'fetched': 'old', 'groups': [], 'categories': [
+            {'id': 4, 'name': 'Clickjacking', 'levels': [0]},
+        ]}
+        new = [{'id': 4, 'name': 'Clickjacking', 'kind': 'direct', 'labs': []}]
+        with self.assertRaises(ValueError):
+            f.merge(data, new, '2026-11-16')
 
 
 if __name__ == '__main__':

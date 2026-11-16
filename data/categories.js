@@ -8,7 +8,8 @@
    "groups" is the user's own split by lab goal; an id may appear in more than one group.
    Regenerate the mystery categories with the command in README.md. */
 window.PS_CATEGORIES = {
-  "fetched": "2026-11-16",
+  "fetched": "2026-10-04",
+  "directFetched": "2026-11-16",
   "categories": [
     { "id": 1,  "name": "SQL injection",                           "levels": [1] },
     { "id": 2,  "name": "Cross-site scripting",                    "levels": [0, 1, 2] },

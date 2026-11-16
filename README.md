@@ -178,7 +178,10 @@ print(json.dumps(sorted(cats, key=lambda c: c["id"]), indent=2))
 '
 ```
 
-Paste the result as the `categories` array inside `data/categories.js` and bump `fetched`. The
+Replace the mystery entries in the `categories` array of `data/categories.js` with the result
+(the ones without `"kind": "direct"` — leave the direct topics alone, or regenerate them below) and
+bump `fetched`. If an id that's currently a direct topic shows up here, PortSwigger has added it to
+the widget: drop it from `DIRECT` in the script and keep the mystery entry. The
 file is one assignment wrapping the same JSON, so the payload stays valid JSON. The `availablecompletedlevels`
 attribute is per-account, which is why it isn't stored here.
 
@@ -191,7 +194,9 @@ python3 scripts/fetch_direct_topics.py --write   # replace them in data/categori
 
 Standard library only. It reads `/web-security/all-labs` for each section's lab ids, then asks the
 unauthenticated `academy-labstatus` widget for each lab's level, title and page. Sections it
-doesn't recognise, and labs it can't place, are reported on stderr rather than dropped silently.
+doesn't recognise, and labs it can't place, are reported on stderr, and `--write` then writes
+nothing unless you add `--force`. It sets `directFetched`; `fetched` stays the date of the mystery
+list.
 Mystery categories and `groups` are left as they are; a new direct topic has to be added to a group
 by hand (or it lands in a trailing "Other" group).
 

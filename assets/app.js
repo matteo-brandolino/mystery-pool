@@ -82,7 +82,10 @@
       return null;
     }
     const topics = data.categories.map(loadTopic);
-    return topics.every(Boolean) ? Object.freeze(topics) : null;
+    if (!topics.every(Boolean)) return null;
+    // Two topics with one id would share a checkbox state and count twice in the roll.
+    if (new Set(topics.map((t) => t.id)).size !== topics.length) return null;
+    return Object.freeze(topics);
   }
 
   // Groups reference categories by id; unknown ids are dropped, and any category
@@ -262,8 +265,9 @@
     const cat = rolled.topic;
     const url = rolled.url;
 
-    // Neither the URL nor the category is shown: the URL carries categoryId,
-    // and that would spoil the mystery. The name sits behind a collapsed toggle.
+    // Neither the URL nor the topic is shown: the URL carries categoryId, or for a
+    // direct lab its id and page path, and either would spoil the roll. The topic
+    // (and a direct lab's title) sits behind a collapsed toggle.
     pendingUrl = url;
     showReveal(cat, rolled.lab, level);
     el.spoiler.open = false;
@@ -274,8 +278,9 @@
 
   // A direct lab also names the lab and links its description page, since the lab
   // banner shows the title anyway once it opens.
+  // With "Any", a direct lab's own level is known, so that is what's shown.
   function showReveal(cat, lab, level) {
-    el.resultCat.textContent = cat.name + ' · ' + levelName(level);
+    el.resultCat.textContent = cat.name + ' · ' + levelName(lab ? lab.level : level);
     if (!lab) return;
     const link = document.createElement('a');
     link.href = 'https://portswigger.net' + lab.path;
@@ -369,7 +374,8 @@
     categories = loaded;
     categoryById = new Map(categories.map((c) => [c.id, c]));
     groups = loadGroups(data, categories);
-    el.dataStamp.textContent = 'Topic data captured ' + data.fetched + '.';
+    el.dataStamp.textContent = 'Topic data captured ' + data.fetched +
+      (data.directFetched ? ', direct labs ' + data.directFetched : '') + '.';
     buildLevelControl();
     buildGrid();
     wire();

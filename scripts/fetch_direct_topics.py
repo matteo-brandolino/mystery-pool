@@ -10,7 +10,8 @@ one of its labs itself. Its labs come from:
      level label, title and page path of each lab.
 
 Standard library only. Prints the direct topics as JSON; with --write it replaces
-them in data/categories.js and bumps "fetched". Problems go to stderr.
+them in data/categories.js and sets "directFetched". Problems go to stderr, and
+--write refuses to run when there are any (override with --force).
 """
 
 import argparse
@@ -68,11 +69,14 @@ def parse_sections(page):
 
 
 def parse_labstatus(widget_html):
-    """One academy-labstatus widget -> {labId, level, title, path}."""
-    lab_id = re.search(r'\bid=([0-9a-f]+)', widget_html).group(1)
-    level = re.search(r'class="label-[\w-]+-small">\s*(\w+)', widget_html).group(1)
-    path, title = re.search(r'<a href="([^"]+)">([^<]+)</a>', widget_html).groups()
-    return {'labId': lab_id, 'level': LEVELS[level],
+    """One academy-labstatus widget -> {labId, level, title, path}, or None if unreadable."""
+    lab_id = re.search(r'\bid=([0-9A-Fa-f]+)', widget_html)
+    level = re.search(r'class="label-[\w-]+-small">\s*(\w+)', widget_html)
+    link = re.search(r'<a href="([^"]+)">([^<]+)</a>', widget_html)
+    if not (lab_id and level and link) or level.group(1) not in LEVELS:
+        return None
+    path, title = link.groups()
+    return {'labId': lab_id.group(1).lower(), 'level': LEVELS[level.group(1)],
             'title': html.unescape(title).strip(), 'path': html.unescape(path)}
 
 
@@ -115,6 +119,8 @@ def fetch_all_labs():
 
 
 def fetch_labstatus(lab_ids, batch=50):
+    """{labId: lab}. A lab whose widget can't be read is left out, and build_topics
+    then reports it as having no labstatus data."""
     labs = {}
     for i in range(0, len(lab_ids), batch):
         body = json.dumps([{'widgetId': 'academy-labstatus',
@@ -128,7 +134,8 @@ def fetch_labstatus(lab_ids, batch=50):
         with urllib.request.urlopen(req) as r:
             for w in json.load(r):
                 lab = parse_labstatus(w['Html'])
-                labs[lab['labId']] = lab
+                if lab:
+                    labs[lab['labId']] = lab
     return labs
 
 
@@ -146,7 +153,8 @@ def format_data(head, data):
     """Same layout as the hand-written file: one line per mystery topic and group."""
     j = lambda v: json.dumps(v, ensure_ascii=False)
     name_field = lambda c: '"name": ' + j(c['name']) + ','
-    width = max(len(name_field(c)) for c in data['categories'] if c.get('kind') != 'direct') + 4
+    width = max((len(name_field(c)) for c in data['categories'] if c.get('kind') != 'direct'),
+                default=0) + 4
     cats = []
     for c in data['categories']:
         prefix = '    { "id": %s %s' % ((j(c['id']) + ',').ljust(3), name_field(c))
@@ -159,24 +167,34 @@ def format_data(head, data):
             cats.append('%s%s"levels": %s }' % (prefix, ' ' * (width - len(name_field(c))), j(c['levels'])))
     groups = ',\n'.join('    { "phase": %s, "name": %s,\n      "ids": %s }'
                         % (j(g['phase']), j(g['name']), j(g['ids'])) for g in data['groups'])
-    return ('%s%s{\n  "fetched": %s,\n  "categories": [\n%s\n  ],\n  "groups": [\n%s\n  ]\n};\n'
-            % (head, ASSIGN, j(data['fetched']), ',\n'.join(cats), groups))
+    stamps = '  "fetched": %s,\n' % j(data['fetched'])
+    if 'directFetched' in data:
+        stamps += '  "directFetched": %s,\n' % j(data['directFetched'])
+    return ('%s%s{\n%s  "categories": [\n%s\n  ],\n  "groups": [\n%s\n  ]\n};\n'
+            % (head, ASSIGN, stamps, ',\n'.join(cats), groups))
 
 
 def merge(data, direct, today):
-    """Replace every direct topic, keep the mystery ones, sort by id."""
+    """Replace every direct topic, keep the mystery ones, sort by id. "fetched" stays the
+    mystery list's date; "directFetched" records this run."""
     keep = [c for c in data['categories'] if c.get('kind') != 'direct']
-    return {**data, 'fetched': today,
+    clash = {c['id'] for c in keep} & {c['id'] for c in direct}
+    if clash:
+        raise ValueError('ids %s are mystery categories now: drop them from DIRECT'
+                         % sorted(clash))
+    return {**data, 'directFetched': today,
             'categories': sorted(keep + direct, key=lambda c: c['id'])}
 
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument('--write', action='store_true', help='update data/categories.js in place')
+    ap.add_argument('--force', action='store_true', help='--write even if there were warnings')
     args = ap.parse_args()
 
     sections = parse_sections(fetch_all_labs())
-    wanted = [x for anchor, ids in sections if anchor not in SKIPPED for x in ids]
+    wanted = [x for anchor, ids in sections
+              if anchor in DIRECT or anchor == 'prototype-pollution' for x in ids]
     topics, warnings = build_topics(sections, fetch_labstatus(wanted))
     for w in warnings:
         print('warning: ' + w, file=sys.stderr)
@@ -184,6 +202,10 @@ def main():
     if not args.write:
         print(json.dumps(topics, indent=2, ensure_ascii=False))
         return
+    if not topics:
+        sys.exit('no direct topics found: has the all-labs page changed? Nothing written.')
+    if warnings and not args.force:
+        sys.exit('warnings above: nothing written. Fix the mapping, or rerun with --force.')
     head, data = read_data(DATA_FILE.read_text())
     merged = merge(data, topics, datetime.date.today().isoformat())
     DATA_FILE.write_text(format_data(head, merged))
