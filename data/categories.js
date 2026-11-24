@@ -5,11 +5,12 @@
    derived from them. Direct topics use PortSwigger's id where it has one (4, 10, 15)
    and 100+ otherwise (108 is the single server-side prototype pollution RCE lab); scripts/fetch_direct_topics.py --write regenerates them.
    A classic script, not a fetched JSON: it works from disk and under any sub-path.
-   "groups" is the user's own split by lab goal; an id may appear in more than one group.
+   "groups" follow the category -> stage table of the user's BSCP notes; an id appears in
+   every stage it fits.
    Regenerate the mystery categories with the command in README.md. */
 window.PS_CATEGORIES = {
   "fetched": "2026-10-04",
-  "directFetched": "2026-11-16",
+  "directFetched": "2026-11-24",
   "categories": [
     { "id": 1,  "name": "SQL injection",                           "levels": [1] },
     { "id": 2,  "name": "Cross-site scripting",                    "levels": [0, 1, 2] },
@@ -226,12 +227,10 @@ window.PS_CATEGORIES = {
   ],
   "groups": [
     { "phase": "Foothold", "name": "Get access to any user",
-      "ids": [2, 5, 14, 16, 20, 9] },
+      "ids": [18, 5, 16, 2, 4, 9, 14, 20, 21, 15] },
     { "phase": "Escalation", "name": "Promote yourself to an administrator or steal their data",
-      "ids": [1, 3, 17, 21, 23, 13, 102, 103, 100, 101] },
+      "ids": [2, 4, 9, 14, 20, 21, 15, 3, 6, 13, 23, 1, 103, 102, 19, 104, 105, 107, 100, 101, 106, 17] },
     { "phase": "Exfiltration", "name": "Read the content of /home/carlos/secret",
-      "ids": [8, 7, 11, 12, 17, 22, 108, 10] },
-    { "phase": "Misc", "name": "Everything else",
-      "ids": [6, 18, 19, 4, 15, 104, 105, 106, 107] }
+      "ids": [108, 106, 17, 7, 8, 10, 11, 12, 22] }
   ]
 };

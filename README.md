@@ -158,7 +158,12 @@ Direct topics (no mystery pool; labs from the all-labs page):
 
 Levels map to `level=0` (Apprentice), `1` (Practitioner), `2` (Expert), `-1` (Any). Ids 4, 10 and
 15 are PortSwigger's own (the ids the widget skips). The others start at 100 so they can't collide
-with an id PortSwigger adds to the widget later. Essential skills is left out on purpose.
+with an id PortSwigger adds to the widget later. Essential skills and MCP server vulnerabilities are left out on purpose.
+
+The topics are grouped by exam stage (Foothold, Escalation, Exfiltration), following the
+category → stage table of the BSCP notes. A topic that fits more than one stage (XSS, request
+smuggling, insecure deserialization, …) is listed in each of them; it's still one topic, so ticking
+it in one group ticks it everywhere and it counts once in the roll.
 
 ## Refreshing the topic list
 

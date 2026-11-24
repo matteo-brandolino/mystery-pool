@@ -54,7 +54,8 @@ PROTOTYPE_POLLUTION = {
     '/server-side/': (101, 'Prototype pollution (server-side)'),
 }
 
-# Sections the Mystery widget already covers, plus one that isn't a vulnerability class.
+# Sections the Mystery widget already covers, plus ones left out on purpose:
+# essential-skills isn't a vulnerability class, mcp-server-vulnerabilities isn't wanted.
 SKIPPED = {
     'sql-injection', 'cross-site-scripting', 'cross-site-request-forgery-csrf',
     'dom-based-vulnerabilities', 'cross-origin-resource-sharing-cors',
@@ -63,7 +64,7 @@ SKIPPED = {
     'access-control-vulnerabilities', 'authentication', 'web-cache-poisoning',
     'insecure-deserialization', 'information-disclosure', 'business-logic-vulnerabilities',
     'http-host-header-attacks', 'oauth-authentication', 'file-upload-vulnerabilities', 'jwt',
-    'essential-skills',
+    'essential-skills', 'mcp-server-vulnerabilities',
 }
 
 
